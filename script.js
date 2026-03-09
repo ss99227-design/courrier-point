@@ -12,37 +12,40 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   waClose?.addEventListener("click", () => waModal?.close());
 
-  // Lottie
-  if (window.lottie && document.getElementById("homeLottie")) {
-    lottie.loadAnimation({
-      container: document.getElementById("homeLottie"),
-      renderer: "svg",
-      loop: true,
-      autoplay: true,
-      path: "https://assets10.lottiefiles.com/packages/lf20_oyyz7n7u.json",
-    });
-  }
+  // LOTTIE (LOCAL loader.json)
+const lottieBox = document.getElementById("homeLottie");
+const fallback = document.getElementById("lottieFallback");
 
+if (lottieBox && window.lottie) {
+  lottieBox.innerHTML = "";
+
+  const anim = lottie.loadAnimation({
+    container: lottieBox,
+    renderer: "svg",
+    loop: true,
+    autoplay: true,
+    path: "assets/loader.json" // ✅ आपका local file
+  });
+
+  anim.addEventListener("DOMLoaded", () => {
+    if (fallback) fallback.hidden = true;
+  });
+
+  anim.addEventListener("data_failed", () => {
+    if (fallback) fallback.hidden = false;
+    console.error("Lottie JSON failed to load: assets/loader.json");
+  });
+} else {
+  if (fallback) fallback.hidden = false;
+}
   // GSAP
-  if (!window.gsap) return;
+  if (!window.gsap) {
+    console.error("GSAP not loaded. Check CDN in index.html");
+    return;
+  }
   gsap.registerPlugin(ScrollTrigger);
 
-  // Reduced motion support
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-  // Set initial states (so CSS doesn't hide anything permanently)
-  gsap.set(
-    [
-      ".hero__badge",
-      "#home h1",
-      "#home .lead",
-      "#home .ctaRow .btn",
-      "#home .chips .chip",
-      "#home .infoCard",
-      "#home .lottieCard",
-    ],
-    { opacity: 1 }
-  );
 
   // HERO intro
   const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -78,7 +81,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Services cards stagger
+  // Services cards
   const cards = gsap.utils.toArray("#services .card");
   if (cards.length) {
     gsap.from(cards, {
@@ -93,7 +96,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Guidance title + content
+  // Guidance
   gsap.from("#guidance .ribbonTitle", {
     y: 16,
     opacity: 0,
@@ -123,7 +126,7 @@ window.addEventListener("DOMContentLoaded", () => {
     scrollTrigger: { trigger: "#guidance .calcBanner", start: "top 88%" },
   });
 
-  // Track buttons wave
+  // Track buttons
   const trackBtns = gsap.utils.toArray("#track .trackBtn");
   if (trackBtns.length) {
     gsap.from(trackBtns, {
@@ -172,7 +175,7 @@ window.addEventListener("DOMContentLoaded", () => {
     scrollTrigger: { trigger: ".footer", start: "top 92%" },
   });
 
-  // Subtle parallax on lottie card
+  // Parallax on lottie card
   gsap.to("#home .lottieCard", {
     y: -18,
     ease: "none",
