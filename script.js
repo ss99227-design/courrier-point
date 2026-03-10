@@ -12,42 +12,70 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   waClose?.addEventListener("click", () => waModal?.close());
 
-  // LOTTIE (LOCAL loader.json)
-const lottieBox = document.getElementById("homeLottie");
-const fallback = document.getElementById("lottieFallback");
+  // MOBILE NAV TOGGLE
+  const navToggle = document.getElementById("navToggle");
+  const primaryNav = document.getElementById("primaryNav");
 
-if (lottieBox && window.lottie) {
-  lottieBox.innerHTML = "";
-
-  const anim = lottie.loadAnimation({
-    container: lottieBox,
-    renderer: "svg",
-    loop: true,
-    autoplay: true,
-    path: "assets/loader.json" // ✅ आपका local file
-  });
-
-  anim.addEventListener("DOMLoaded", () => {
-    if (fallback) fallback.hidden = true;
-  });
-
-  anim.addEventListener("data_failed", () => {
-    if (fallback) fallback.hidden = false;
-    console.error("Lottie JSON failed to load: assets/loader.json");
-  });
-} else {
-  if (fallback) fallback.hidden = false;
-}
-  // GSAP
-  if (!window.gsap) {
-    console.error("GSAP not loaded. Check CDN in index.html");
-    return;
+  function closeMenu() {
+    if (!primaryNav || !navToggle) return;
+    primaryNav.classList.remove("nav--open");
+    navToggle.classList.remove("is-open");
+    navToggle.setAttribute("aria-expanded", "false");
   }
-  gsap.registerPlugin(ScrollTrigger);
 
+  function toggleMenu() {
+    if (!primaryNav || !navToggle) return;
+    const open = primaryNav.classList.toggle("nav--open");
+    navToggle.classList.toggle("is-open", open);
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  if (navToggle && primaryNav) {
+    navToggle.addEventListener("click", toggleMenu);
+
+    // click any link -> close menu
+    primaryNav.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMenu));
+
+    // click outside -> close
+    document.addEventListener("click", (e) => {
+      const inside = primaryNav.contains(e.target) || navToggle.contains(e.target);
+      if (!inside) closeMenu();
+    });
+
+    // ESC -> close
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+  }
+
+  // LOTTIE (LOCAL loader.json)
+  const lottieBox = document.getElementById("homeLottie");
+  const fallback = document.getElementById("lottieFallback");
+  if (lottieBox && window.lottie) {
+    lottieBox.innerHTML = "";
+    const anim = lottie.loadAnimation({
+      container: lottieBox,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      path: "assets/loader.json"
+    });
+    anim.addEventListener("DOMLoaded", () => {
+      if (fallback) fallback.hidden = true;
+    });
+    anim.addEventListener("data_failed", () => {
+      if (fallback) fallback.hidden = false;
+      console.error("Lottie failed: assets/loader.json");
+    });
+  } else {
+    if (fallback) fallback.hidden = false;
+  }
+
+  // GSAP
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  // HERO intro
   const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
   heroTl
     .from(".hero__badge", { y: 18, opacity: 0, duration: 0.6 })
@@ -58,27 +86,20 @@ if (lottieBox && window.lottie) {
     .from("#home .infoCard", { y: 14, opacity: 0, duration: 0.6 }, "-=0.25")
     .from("#home .lottieCard", { y: 10, opacity: 0, duration: 0.6 }, "-=0.35");
 
-  // Section headings
+  // Headings
   gsap.utils.toArray(".sectionHead").forEach((head) => {
     const title = head.querySelector("h2");
     const sub = head.querySelector(".muted");
 
-    if (title) {
-      gsap.from(title, {
-        y: 18,
-        opacity: 0,
-        duration: 0.7,
-        scrollTrigger: { trigger: head, start: "top 85%" },
-      });
-    }
-    if (sub) {
-      gsap.from(sub, {
-        y: 12,
-        opacity: 0,
-        duration: 0.55,
-        scrollTrigger: { trigger: head, start: "top 85%" },
-      });
-    }
+    if (title) gsap.from(title, {
+      y: 18, opacity: 0, duration: 0.7,
+      scrollTrigger: { trigger: head, start: "top 85%" },
+    });
+
+    if (sub) gsap.from(sub, {
+      y: 12, opacity: 0, duration: 0.55,
+      scrollTrigger: { trigger: head, start: "top 85%" },
+    });
   });
 
   // Services cards
@@ -98,31 +119,19 @@ if (lottieBox && window.lottie) {
 
   // Guidance
   gsap.from("#guidance .ribbonTitle", {
-    y: 16,
-    opacity: 0,
-    duration: 0.7,
+    y: 16, opacity: 0, duration: 0.7,
     scrollTrigger: { trigger: "#guidance", start: "top 82%" },
   });
-
   gsap.from("#guidance .contentBox", {
-    y: 20,
-    opacity: 0,
-    duration: 0.9,
+    y: 20, opacity: 0, duration: 0.9,
     scrollTrigger: { trigger: "#guidance .contentBox", start: "top 85%" },
   });
-
   gsap.from("#guidance .twoCol .contentMini", {
-    y: 16,
-    opacity: 0,
-    stagger: 0.12,
-    duration: 0.7,
+    y: 16, opacity: 0, stagger: 0.12, duration: 0.7,
     scrollTrigger: { trigger: "#guidance .twoCol", start: "top 85%" },
   });
-
   gsap.from("#guidance .calcBanner", {
-    y: 14,
-    opacity: 0,
-    duration: 0.7,
+    y: 14, opacity: 0, duration: 0.7,
     scrollTrigger: { trigger: "#guidance .calcBanner", start: "top 88%" },
   });
 
@@ -130,27 +139,19 @@ if (lottieBox && window.lottie) {
   const trackBtns = gsap.utils.toArray("#track .trackBtn");
   if (trackBtns.length) {
     gsap.from(trackBtns, {
-      y: 16,
-      opacity: 0,
-      stagger: 0.08,
-      duration: 0.6,
+      y: 16, opacity: 0, stagger: 0.08, duration: 0.6,
       scrollTrigger: { trigger: "#track .trackGrid", start: "top 85%" },
     });
   }
 
-  // Fraud content + list items
+  // Fraud
   gsap.from("#fraud .contentBox", {
-    y: 20,
-    opacity: 0,
-    duration: 0.9,
+    y: 20, opacity: 0, duration: 0.9,
     scrollTrigger: { trigger: "#fraud .contentBox", start: "top 85%" },
   });
-
   gsap.utils.toArray("#fraud .contentBox ul li").forEach((li) => {
     gsap.from(li, {
-      x: -10,
-      opacity: 0,
-      duration: 0.4,
+      x: -10, opacity: 0, duration: 0.4,
       scrollTrigger: { trigger: li, start: "top 92%" },
     });
   });
@@ -159,23 +160,18 @@ if (lottieBox && window.lottie) {
   const contactItems = gsap.utils.toArray("#contact .contactItem");
   if (contactItems.length) {
     gsap.from(contactItems, {
-      y: 16,
-      opacity: 0,
-      stagger: 0.1,
-      duration: 0.7,
+      y: 16, opacity: 0, stagger: 0.1, duration: 0.7,
       scrollTrigger: { trigger: "#contact .contactGrid", start: "top 85%" },
     });
   }
 
   // Footer
   gsap.from(".footer", {
-    y: 12,
-    opacity: 0,
-    duration: 0.7,
+    y: 12, opacity: 0, duration: 0.7,
     scrollTrigger: { trigger: ".footer", start: "top 92%" },
   });
 
-  // Parallax on lottie card
+  // Parallax lottie card
   gsap.to("#home .lottieCard", {
     y: -18,
     ease: "none",
