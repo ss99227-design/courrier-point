@@ -20,7 +20,7 @@
 
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- GSAP + ScrollTrigger (IMPORTANT) -->
+  <!-- GSAP + ScrollTrigger -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
@@ -34,11 +34,22 @@
 <body>
   <header class="header">
     <div class="container header__inner">
+
+      <!-- LOGO -->
       <a class="brand brand--logoOnly" href="#home" aria-label="Courrier Point Home">
         <img class="brand__logo brand__logo--big" src="assets/logo.png" alt="Courrier Point Logo" />
       </a>
 
-      <nav class="nav" aria-label="Primary">
+      <!-- HAMBURGER (MOBILE) -->
+      <button class="navToggle" id="navToggle" type="button"
+        aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+        <span class="navToggle__bar"></span>
+        <span class="navToggle__bar"></span>
+        <span class="navToggle__bar"></span>
+      </button>
+
+      <!-- NAV -->
+      <nav class="nav" id="primaryNav" aria-label="Primary">
         <a href="#home">Home</a>
         <a href="#services">Services</a>
         <a href="#guidance">Service & Guidance</a>
@@ -47,6 +58,7 @@
         <a href="#contact">Contact</a>
       </nav>
 
+      <!-- CTA -->
       <div class="header__cta">
         <a class="btn btn--primary" href="tel:07714263862">Call Now</a>
         <button class="btn btn--ghost" id="whatsappBtn" type="button" aria-haspopup="dialog">
@@ -60,6 +72,7 @@
     <!-- HOME -->
     <section id="home" class="section section--home">
       <div class="container homeGrid">
+        <!-- Left content -->
         <div class="hero">
           <div class="hero__badge">Domestic • International • Documents • Parcels</div>
 
@@ -86,7 +99,7 @@
               <div class="infoCard__k">Address</div>
               <div class="infoCard__v">
                 <a class="mapLink" target="_blank" rel="noopener"
-                  href="https://www.google.com/maps/search/?api=1&query=7JVP%2BRF%20Raipur%2C%20Chhattisgarh">
+                   href="https://www.google.com/maps/search/?api=1&query=7JVP%2BRF%20Raipur%2C%20Chhattisgarh">
                   <span class="icon" aria-hidden="true">📍</span>
                   Shop No.2 Pal Complex Near Bhanpuri Chowk Bhanpuri Raipur C.G.
                 </a>
@@ -100,8 +113,12 @@
           </div>
         </div>
 
+        <!-- Right side Lottie -->
         <div class="lottieCard" aria-label="Courier animation">
           <div id="homeLottie" class="homeLottie"></div>
+          <div id="lottieFallback" class="lottieFallback" hidden>
+            Animation load failed. Please refresh.
+          </div>
         </div>
       </div>
     </section>
@@ -307,7 +324,7 @@
               <div class="contactItem contactItem--wide">
                 <div class="contactItem__k">Address</div>
                 <a class="contactItem__v mapLink" target="_blank" rel="noopener"
-                  href="https://www.google.com/maps/search/?api=1&query=7JVP%2BRF%20Raipur%2C%20Chhattisgarh">
+                   href="https://www.google.com/maps/search/?api=1&query=7JVP%2BRF%20Raipur%2C%20Chhattisgarh">
                   <span class="icon" aria-hidden="true">📍</span>
                   Shop No.2 Pal Complex Near Bhanpuri Chowk Bhanpuri Raipur C.G.
                 </a>
@@ -338,7 +355,7 @@
     </section>
   </main>
 
-  <!-- WhatsApp QR Modal (only shows QR) -->
+  <!-- WhatsApp QR Modal -->
   <dialog class="modal" id="waModal" aria-label="Scan for WhatsApp">
     <div class="modalCard" role="document">
       <div class="modal__header">
