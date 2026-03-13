@@ -382,46 +382,6 @@ ul{ padding-left: 1.1rem; }
 .footer__brand{ font-weight: 1000; font-size: 1.15rem; }
 .footer__muted{ color: var(--muted); font-size: .92rem; max-width: 65ch; }
 
-/* Modal */
-.modal{ border: none; padding: 0; background: transparent; }
-.modal::backdrop{
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(2px);
-}
-.modalCard{
-  width: min(420px, 92vw);
-  background: rgba(255,255,255,0.96);
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 18px;
-  box-shadow: 0 30px 70px rgba(0,0,0,0.22);
-  overflow: hidden;
-}
-.modal__header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding: .85rem 1rem;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: #fff;
-}
-.modal__title{ font-weight: 1000; }
-.modal__close{
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.3);
-  color: #fff;
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  cursor:pointer;
-}
-.modal__body{
-  padding: 1rem;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.qrImg{ width: 260px; max-width: 80%; height: auto; border-radius: 14px; }
-
 /*─────────────────────────────────────
   MOBILE HAMBURGER MENU
 ─────────────────────────────────────*/
@@ -491,7 +451,6 @@ ul{ padding-left: 1.1rem; }
   .nav a:hover{ background: rgba(0,119,204,0.10); }
 
   .nav.nav--open{ display:flex; }
-
   .navToggle{ display:flex; }
   .header__cta{ margin-left: auto; }
 }
@@ -512,9 +471,7 @@ ul{ padding-left: 1.1rem; }
   .header__cta .btn{ padding: .55rem .85rem; }
 }
 
-/* =========================================================
-   Premium Active Link (Desktop + Mobile)
-   ========================================================= */
+/* Premium Active Link */
 .nav a.is-active{
   color: #0b4e7a;
   background: linear-gradient(135deg, rgba(0,119,204,0.14), rgba(255,111,97,0.12));
@@ -523,9 +480,7 @@ ul{ padding-left: 1.1rem; }
   padding: .38rem .7rem;
   box-shadow: 0 10px 22px rgba(0,119,204,0.10);
 }
-.nav a.is-active::after{
-  width: 100% !important;
-}
+.nav a.is-active::after{ width: 100% !important; }
 @media (max-width: 920px){
   .nav a.is-active{
     border-radius: 14px;
@@ -534,4 +489,152 @@ ul{ padding-left: 1.1rem; }
     box-shadow: none;
     padding: .85rem .9rem;
   }
+}
+
+/* =========================
+   CHATBOT WIDGET
+========================= */
+.chatbot{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 120;
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+.chatbot__fab{
+  border: 0;
+  cursor: pointer;
+  padding: 14px 16px;
+  border-radius: 999px;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), #2aa4ff);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+}
+
+.chatbot__panel{
+  width: min(360px, 92vw);
+  height: 460px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 18px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.22);
+  overflow: hidden;
+
+  position: absolute;
+  right: 0;
+  bottom: 58px;
+
+  display: none;
+  flex-direction: column;
+}
+.chatbot__panel.open{ display:flex; }
+
+.chatbot__header{
+  padding: 12px 14px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chatbot__headLeft{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.chatbot__avatar{
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  object-fit: cover;
+  background: rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.65);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+
+.chatbot__title{ font-weight: 1000; }
+.chatbot__sub{ font-size: 12px; opacity: .9; margin-top: 2px; }
+
+.chatbot__close{
+  border: 0;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.chatbot__messages{
+  padding: 12px;
+  overflow: auto;
+  flex: 1;
+  background: linear-gradient(180deg, rgba(0,119,204,0.05), transparent 55%);
+}
+
+.msg{
+  max-width: 85%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.msg--bot{
+  background: rgba(0,119,204,0.10);
+  border: 1px solid rgba(0,119,204,0.16);
+}
+.msg--user{
+  background: rgba(17,24,39,0.08);
+  border: 1px solid rgba(17,24,39,0.12);
+  margin-left: auto;
+}
+
+.chatbot__quick{
+  display:flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.9);
+}
+
+.chip--chat{
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.10);
+}
+
+.chatbot__form{
+  display:flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.98);
+}
+
+.chatbot__input{
+  flex: 1;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  padding: 10px 12px;
+  outline: none;
+}
+
+.chatbot__send{
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 900;
+  color:#fff;
+  cursor:pointer;
+  background: linear-gradient(135deg, var(--primary), #2aa4ff);
+}
+
+@media (max-width: 520px){
+  .chatbot{ right: 12px; bottom: 12px; }
 }
