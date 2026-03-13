@@ -3,14 +3,26 @@ window.addEventListener("DOMContentLoaded", () => {
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // WhatsApp Modal
-  const waModal = document.getElementById("waModal");
-  const waClose = document.getElementById("waClose");
-  ["whatsappBtn", "whatsappBtn2", "whatsappBtn4"].forEach((id) => {
-    const btn = document.getElementById(id);
-    if (btn) btn.addEventListener("click", () => waModal?.showModal());
-  });
-  waClose?.addEventListener("click", () => waModal?.close());
+  /* =========================================================
+     WhatsApp Direct Chat
+     Put your WhatsApp number here: 91 + mobile (no +, no spaces)
+     Example: 919893074862
+  ========================================================= */
+  const WA_NUMBER = "919893074862"; // <-- CHANGE THIS
+
+  function openWhatsApp(message) {
+    const text = encodeURIComponent(message || "Hi Courrier Point, I want to book a courier.");
+    const url = `https://wa.me/${WA_NUMBER}?text=${text}`;
+    window.open(url, "_blank", "noopener");
+  }
+
+  const waBtn1 = document.getElementById("whatsappBtn");
+  const waBtn2 = document.getElementById("whatsappBtn2");
+  const waBtn4 = document.getElementById("whatsappBtn4");
+
+  if (waBtn1) waBtn1.addEventListener("click", () => openWhatsApp("Hi Courrier Point, I want courier booking details."));
+  if (waBtn2) waBtn2.addEventListener("click", () => openWhatsApp("Hi Courrier Point, please share rates & process for booking."));
+  if (waBtn4) waBtn4.addEventListener("click", () => openWhatsApp("Hi Courrier Point, I need help with courier booking."));
 
   // LOTTIE (LOCAL loader.json)
   const lottieBox = document.getElementById("homeLottie");
@@ -65,7 +77,6 @@ window.addEventListener("DOMContentLoaded", () => {
       navToggle.classList.remove("is-open");
       navToggle.setAttribute("aria-expanded", "false");
 
-      // IMPORTANT: clear inline gsap props so desktop nav never hides
       gsap.set(primaryNav, { clearProps: "all" });
 
       gsap.set(menuBackdrop, { autoAlpha: 0 });
@@ -259,4 +270,78 @@ window.addEventListener("DOMContentLoaded", () => {
     ease: "none",
     scrollTrigger: { trigger: "#home", start: "top top", end: "bottom top", scrub: 0.6 },
   });
+
+  /* =========================
+     SIMPLE FAQ CHATBOT (No API)
+  ========================= */
+  const fab = document.getElementById("chatFab");
+  const panel = document.getElementById("chatPanel");
+  const close = document.getElementById("chatClose");
+  const msgs = document.getElementById("chatMessages");
+  const form = document.getElementById("chatForm");
+  const input = document.getElementById("chatInput");
+
+  if (fab && panel && close && msgs && form && input) {
+    const data = {
+      timing: "Timing: 10 AM to 7 PM (Sunday Closed).",
+      address: "Address: Shop No.2 Pal Complex Near Bhanpuri Chowk Bhanpuri Raipur C.G.",
+      tracking: "Tracking: Go to 'Track Your Shipment' section and click your courier company (TRACKON/DTDC/etc.).",
+      cod: "COD Not Available.",
+      international: "Yes, International booking support is available. Please WhatsApp/Call for rates & documents.",
+    };
+
+    function addMsg(text, who="bot"){
+      const div = document.createElement("div");
+      div.className = `msg msg--${who}`;
+      div.textContent = text;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function openChat(){
+      panel.classList.add("open");
+      panel.setAttribute("aria-hidden","false");
+      setTimeout(() => input.focus(), 50);
+      if (msgs.childElementCount === 0) {
+        addMsg("Hi! Welcome to Courrier Point. How can I help you?");
+        addMsg("Quick options: timing, address, tracking, COD, international.");
+      }
+    }
+    function closeChat(){
+      panel.classList.remove("open");
+      panel.setAttribute("aria-hidden","true");
+    }
+
+    fab.addEventListener("click", () => {
+      panel.classList.contains("open") ? closeChat() : openChat();
+    });
+    close.addEventListener("click", closeChat);
+
+    document.querySelectorAll(".chip--chat").forEach(btn=>{
+      btn.addEventListener("click", () => {
+        const key = btn.getAttribute("data-q");
+        addMsg(btn.textContent, "user");
+        addMsg(data[key] || "Please call us for details.", "bot");
+      });
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) return;
+      addMsg(q, "user");
+      input.value = "";
+
+      const text = q.toLowerCase();
+      let ans =
+        (text.includes("time") || text.includes("timing") || text.includes("open")) ? data.timing :
+        (text.includes("address") || text.includes("location") || text.includes("where")) ? data.address :
+        (text.includes("track") || text.includes("tracking")) ? data.tracking :
+        (text.includes("cod")) ? data.cod :
+        (text.includes("international") || text.includes("abroad")) ? data.international :
+        "I can help with: timing, address, tracking, COD, international. Or WhatsApp us.";
+
+      setTimeout(() => addMsg(ans, "bot"), 250);
+    });
+  }
 });
